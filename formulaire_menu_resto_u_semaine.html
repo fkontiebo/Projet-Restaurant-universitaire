@@ -121,7 +121,7 @@
         <button class="btn" id="export">Exporter (.json)</button>
         <button class="btn" id="import">Importer…</button>
         <input type="file" id="file-input" accept="application/json" hidden />
-        <button class="btn" id="set-students">Nombre d'étudiant attendu</button>
+        <button class="btn" onclick="location.href='estimation_frequentation_resto_u_semaine.html'">Nombre d'étudiants attendus</button>
       </div>
     </section>
 
@@ -143,7 +143,6 @@
     const exportBtn = document.getElementById('export');
     const importBtn = document.getElementById('import');
     const fileInput = document.getElementById('file-input');
-    const setStudentsBtn = document.getElementById('set-students');
     const studentsCount = document.getElementById('etudiants-count');
 
     // ----- construction du tableau -----
@@ -163,7 +162,7 @@
 
       // Corps
       tbody.innerHTML = DAYS.map(day => {
-        let cells = [`<td><label${day}</td>`];
+        let cells = [`<td>${day}</td>`];
         for(let i=1;i<=platPairs;i++){
           cells.push(`<td><input type="text" inputmode="text" name="${day}-plat-${i}" placeholder="Nom du plat" aria-label="${day} plat ${i}"></td>`);
           if(i !== platPairs || i === 1){
@@ -243,14 +242,7 @@
       }
     });
 
-    setStudentsBtn.addEventListener('click', () => {
-      const current = Number(localStorage.getItem(STORAGE_N_STUDENTS) || 0);
-      const val = prompt("Nombre d'étudiants attendu (total semaine)", current || 0);
-      if(val === null) return;
-      const n = Math.max(0, Math.floor(Number(val)) || 0);
-      localStorage.setItem(STORAGE_N_STUDENTS, String(n));
-      updateStudentsChip();
-    });
+
 
     function updateStudentsChip(){
       const n = Number(localStorage.getItem(STORAGE_N_STUDENTS) || 0);

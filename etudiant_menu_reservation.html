@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resto U’ Bartholdi – Menu étudiant & réservation</title>
+  <style>
+    :root{
+      --rouge:#c3002f;--rouge-fonce:#8f0024;--orange:#ff8a3d;--beige:#fff6ec;--gris-50:#fafafa;--gris-100:#f5f5f7;--gris-200:#ececf1;--gris-600:#6a6a6a;--radius:16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;background:#f2f2f5;color:#161616;}
+
+    header{background:white;border-bottom:1px solid var(--gris-200);position:sticky;top:0;z-index:20;}
+    .container{max-width:1100px;margin:0 auto;padding:18px 16px;}
+    .flex-between{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+    .brand{display:flex;align-items:baseline;gap:8px;font-weight:700;}
+    .badge{background:var(--rouge);color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;}
+
+    .hero{margin-top:20px;border-radius:24px;background:linear-gradient(135deg,#c3002f,#8f0024);color:#fff;display:grid;grid-template-columns:3fr 2fr;gap:10px;overflow:hidden;position:relative;}
+    .hero-main{padding:26px 26px 24px;}
+    .hero-eyebrow{font-size:14px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;}
+    .hero-title{font-size:30px;font-weight:800;margin-top:6px;}
+    .hero-sub{margin-top:10px;font-size:15px;max-width:320px;}
+    .hero-meta{margin-top:18px;font-size:12px;background:rgba(255,255,255,.2);display:inline-flex;gap:12px;border-radius:999px;padding:5px 10px;align-items:center;}
+
+    .hero-side{display:flex;align-items:flex-end;justify-content:flex-end;padding:0 20px 8px 0;}
+    .hero-badge{background:rgba(255,255,255,.2);border-radius:18px;padding:10px 14px;font-size:14px;backdrop-filter:blur(6px);}
+
+    main{max-width:1100px;margin:24px auto 60px;padding:0 16px;}
+
+    .layout{display:grid;grid-template-columns:3fr 2fr;gap:24px;margin-top:24px;}
+
+    /* --------- CAROUSEL MENU --------- */
+    .card{background:white;border-radius:var(--radius);border:1px solid var(--gris-200);box-shadow:0 8px 25px rgba(15,23,42,.06);padding:18px 18px 20px;}
+    .card h2{font-size:18px;margin-bottom:8px;}
+    .muted{color:var(--gris-600);font-size:13px;}
+
+    .carousel{margin-top:14px;position:relative;overflow:hidden;}
+    .track{display:flex;transition:transform .28s ease;}
+    .slide{min-width:100%;padding:6px 4px 4px;}
+
+    .slide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .slide-header h3{font-size:18px;}
+    .chip-day{font-size:13px;border-radius:999px;padding:4px 10px;background:var(--beige);color:var(--rouge-fonce);font-weight:600;}
+
+    .menu-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:8px;}
+    .menu-block{background:var(--gris-50);border-radius:14px;padding:10px 12px;border:1px solid var(--gris-200);min-height:120px;}
+    .menu-block h4{text-align:center;font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:var(--gris-600);margin-bottom:6px;}
+    .menu-block ul{list-style:disc;margin-left:16px;font-size:14px;}
+    .menu-block li+li{margin-top:3px;}
+    .empty{color:var(--gris-600);text-align:center;font-size:13px;margin-top:24px;}
+
+    .nav-btn{position:absolute;top:50%;transform:translateY(-50%);border:none;border-radius:999px;width:34px;height:34px;background:white;box-shadow:0 4px 16px rgba(15,23,42,.18);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gris-600);}
+    .nav-btn:hover{background:#f9fafb;}
+    .nav-prev{left:8px;}
+    .nav-next{right:8px;}
+
+    .dots{margin-top:10px;text-align:center;}
+    .dot{display:inline-block;width:7px;height:7px;border-radius:999px;background:#e0e0ea;margin:0 3px;cursor:pointer;}
+    .dot.active{background:var(--rouge);}
+
+    /* --------- FORMULAIRE RESA --------- */
+    form{display:grid;gap:10px;margin-top:8px;}
+    label{font-size:14px;font-weight:500;}
+    input[type="text"],input[type="email"],input[type="number"],select,textarea{
+      width:100%;padding:8px 10px;border-radius:10px;border:1px solid var(--gris-200);font-size:14px;background:var(--gris-50);
+    }
+    textarea{min-height:80px;resize:vertical;}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 2px rgba(195,0,47,.18);background:white;}
+
+    .btn-primary{margin-top:4px;border:none;border-radius:999px;padding:10px 16px;background:var(--rouge);color:white;font-weight:600;font-size:14px;cursor:pointer;}
+    .btn-primary:hover{background:var(--rouge-fonce);}  
+    .note{font-size:12px;color:var(--gris-600);margin-top:4px;}
+
+    .alert{margin-top:8px;font-size:13px;padding:8px 10px;border-radius:10px;display:none;}
+    .alert.ok{background:#ecfdf3;border:1px solid #22c55e33;color:#166534;}
+    .alert.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;}
+
+    @media(max-width:880px){
+      .hero{grid-template-columns:1fr;}
+      .hero-side{justify-content:flex-start;padding-left:26px;}
+      .layout{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container flex-between">
+      <div class="brand"><span class="badge">OUVERT AUJOURD'HUI</span><span>Resto U’ Bartholdi</span></div>
+      <a href="index.html" style="font-size:13px;color:var(--gris-600);text-decoration:none;">← Retour à l’accueil</a>
+    </div>
+  </header>
+
+  <div class="container hero">
+    <div class="hero-main">
+      <div class="hero-eyebrow">Crous · Nantes Pays de la Loire</div>
+      <div class="hero-title">Qu’est‑ce qu’on mange ?</div>
+      <p class="hero-sub">Consulte le menu du jour, fais défiler les jours de la semaine et réserve ta venue au Resto U’ Bartholdi.</p>
+      <div class="hero-meta" id="meta-dates">
+        <span>Publié le <span id="date-pub">—</span></span>
+        <span>· Mise à jour le <span id="date-maj">—</span></span>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="hero-badge">🍽️ Menus saisis par le personnel · Données synchronisées automatiquement</div>
+    </div>
+  </div>
+
+  <main>
+    <div class="layout">
+      <!-- Bloc menu du jour -->
+      <section class="card" aria-label="Menus de la semaine">
+        <h2>Menu du jour</h2>
+        <p class="muted">Fais glisser horizontalement ou utilise les flèches pour parcourir les jours de la semaine.</p>
+
+        <div class="carousel" id="menu-carousel">
+          <button class="nav-btn nav-prev" aria-label="Jour précédent">‹</button>
+          <div class="track" id="track">
+            <!-- slides générées par JS -->
+          </div>
+          <button class="nav-btn nav-next" aria-label="Jour suivant">›</button>
+        </div>
+        <div class="dots" id="dots"></div>
+        <p class="note">Les menus sont générés à partir des informations saisies par le personnel dans la page d’administration.</p>
+      </section>
+
+      <!-- Bloc réservation -->
+      <section class="card" aria-label="Réservation au restaurant universitaire">
+        <h2>Réserver</h2>
+        <p class="muted">Cette réservation est indicative et permet d’estimer la fréquentation. Elle ne remplace pas le paiement IZLY.</p>
+
+        <form id="resa-form">
+          <div>
+            <label for="jour">Jour</label>
+            <select id="jour" name="jour" required>
+              <option value="">Choisir un jour…</option>
+            </select>
+          </div>
+          <div>
+            <label for="service">Service</label>
+            <select id="service" name="service" required>
+              <option value="">Choisir…</option>
+              <option value="dejeuner">Déjeuner</option>
+              <option value="diner">Dîner</option>
+            </select>
+          </div>
+          <div>
+            <label for="nb">Nombre de repas</label>
+            <input type="number" id="nb" name="nb" min="1" max="2" value="1" required>
+          </div>
+          <div>
+            <label for="nom">Nom et prénom</label>
+            <input type="text" id="nom" name="nom" autocomplete="name" required>
+          </div>
+          <div>
+            <label for="email">Adresse e‑mail</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+          </div>
+          <div>
+            <label for="comment">Allergies / remarques</label>
+            <textarea id="comment" name="comment" placeholder="Ex. : Allergie aux fruits à coque"></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Envoyer la réservation</button>
+          <p class="note">Les réservations sont stockées localement sur cet ordinateur pour la démonstration.</p>
+          <div id="alert-ok" class="alert ok">Votre réservation a été enregistrée ✅</div>
+          <div id="alert-err" class="alert err">Une erreur est survenue. Merci de vérifier le formulaire.</div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi"]; // même ordre que la page personnel
+    const STORAGE_MENUS="restoU.menu.week"; // doit correspondre exactement à la clé utilisée côté personnel
+    const STORAGE_RESA="restoU.reservations";
+
+    // ---- utilitaires ----
+    function loadMenus(){
+      try{
+        const raw=localStorage.getItem(STORAGE_MENUS);
+        if(!raw) return null;
+        const parsed=JSON.parse(raw);
+        return parsed.data || null;
+      }catch(e){return null;}
+    }
+    function splitItems(str){
+      return (str||"").split(/[;\n]+/).map(s=>s.trim()).filter(Boolean);
+    }
+
+    // ---- génération des slides ----
+    const track=document.getElementById('track');
+    const dotsContainer=document.getElementById('dots');
+    const menuData=loadMenus();
+
+    let slidesHTML="";
+    DAYS.forEach(day=>{
+      const row=menuData?.[day] || {};
+      const plats=splitItems(row.plat1);
+      const garnitures=splitItems(row.plat2);
+      const desserts=splitItems(row.plat3);
+
+      function renderList(items){
+        if(!items.length) return '<div class="empty">Non renseigné</div>';
+        return '<ul>'+items.map(it=>`<li>${it}</li>`).join('')+'</ul>';
+      }
+
+      slidesHTML+=`
+        <article class="slide" data-day="${day}">
+          <div class="slide-header">
+            <h3>${day}</h3>
+            <span class="chip-day">Service midi</span>
+          </div>
+          <div class="menu-columns">
+            <div class="menu-block">
+              <h4>Plat</h4>
+              ${renderList(plats)}
+            </div>
+            <div class="menu-block">
+              <h4>Garniture</h4>
+              ${renderList(garnitures)}
+            </div>
+            <div class="menu-block">
+              <h4>Dessert</h4>
+              ${renderList(desserts)}
+            </div>
+          </div>
+        </article>`;
+    });
+    track.innerHTML=slidesHTML;
+
+    // dots
+    dotsContainer.innerHTML=DAYS.map((_,i)=>`<span class="dot${i===0?' active':''}" data-index="${i}"></span>`).join('');
+
+    // ---- carousel interaction (flèches + drag souris/tactile) ----
+    const prevBtn=document.querySelector('.nav-prev');
+    const nextBtn=document.querySelector('.nav-next');
+    const dots=[...document.querySelectorAll('.dot')];
+    let currentIndex=0;
+    let startX=null; let isDragging=false; let currentTranslate=0; let lastTranslate=0;
+
+    function updateCarousel(){
+      currentTranslate=-currentIndex*track.clientWidth;
+      track.style.transform=`translateX(${currentTranslate}px)`;
+      dots.forEach((d,i)=>d.classList.toggle('active',i===currentIndex));
+      const selectJour=document.getElementById('jour');
+      if(selectJour && !selectJour.value) selectJour.value=DAYS[currentIndex];
+    }
+
+    function goTo(index){
+      const max=DAYS.length-1;
+      currentIndex=Math.max(0,Math.min(max,index));
+      updateCarousel();
+    }
+
+    prevBtn.addEventListener('click',()=>goTo(currentIndex-1));
+    nextBtn.addEventListener('click',()=>goTo(currentIndex+1));
+    dots.forEach(dot=>dot.addEventListener('click',()=>goTo(Number(dot.dataset.index))));
+
+    // drag souris
+    track.addEventListener('mousedown',e=>{
+      isDragging=true; startX=e.clientX; lastTranslate=currentTranslate; track.style.transition='none';
+    });
+    window.addEventListener('mouseup',e=>{
+      if(!isDragging) return; isDragging=false; track.style.transition='transform .28s ease';
+      const diff=e.clientX-startX;
+      if(Math.abs(diff)>50){ if(diff<0) goTo(currentIndex+1); else goTo(currentIndex-1);} else updateCarousel();
+    });
+    window.addEventListener('mousemove',e=>{
+      if(!isDragging) return; const diff=e.clientX-startX; currentTranslate=lastTranslate+diff; track.style.transform=`translateX(${currentTranslate}px)`;});
+
+    // drag tactile
+    track.addEventListener('touchstart',e=>{isDragging=true; startX=e.touches[0].clientX; lastTranslate=currentTranslate; track.style.transition='none';});
+    track.addEventListener('touchmove',e=>{if(!isDragging) return; const diff=e.touches[0].clientX-startX; currentTranslate=lastTranslate+diff; track.style.transform=`translateX(${currentTranslate}px)`;});
+    track.addEventListener('touchend',e=>{if(!isDragging) return; isDragging=false; track.style.transition='transform .28s ease'; const diff=e.changedTouches[0].clientX-startX; if(Math.abs(diff)>50){ if(diff<0) goTo(currentIndex+1); else goTo(currentIndex-1);} else updateCarousel();});
+
+    window.addEventListener('resize',updateCarousel);
+
+    // ---- Pré-remplir le select jour du formulaire ----
+    const selectJour=document.getElementById('jour');
+    DAYS.forEach(d=>{
+      const opt=document.createElement('option');
+      opt.value=d; opt.textContent=d; selectJour.appendChild(opt);
+    });
+
+    // ---- dates affichées dans le bandeau (publi / maj) ----
+    const pubEl=document.getElementById('date-pub');
+    const majEl=document.getElementById('date-maj');
+    const now=new Date();
+    const formatter=new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    pubEl.textContent=formatter.format(now); // pour la démo on met aujourd'hui
+    majEl.textContent=formatter.format(now);
+
+    // ---- Formulaire de réservation (stockage local) ----
+    const form=document.getElementById('resa-form');
+    const okAlert=document.getElementById('alert-ok');
+    const errAlert=document.getElementById('alert-err');
+
+    function showAlert(el){ el.style.display='block'; setTimeout(()=>{el.style.display='none';},2500); }
+
+    form.addEventListener('submit',e=>{
+      e.preventDefault(); errAlert.style.display='none'; okAlert.style.display='none';
+      if(!form.checkValidity()){errAlert.style.display='block';return;}
+      const data=Object.fromEntries(new FormData(form).entries());
+      data.date=new Date().toISOString();
+      try{
+        const existing=JSON.parse(localStorage.getItem(STORAGE_RESA)||'[]');
+        existing.push(data);
+        localStorage.setItem(STORAGE_RESA,JSON.stringify(existing));
+        form.reset();
+        // garder le jour courant sélectionné
+        selectJour.value=DAYS[currentIndex];
+        showAlert(okAlert);
+      }catch(err){console.error(err);showAlert(errAlert);}  
+    });
+
+    // init affichage
+    updateCarousel();
+  </script>
+</body>
+</html>
