@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resto U' Bartholdi – Estimation de la fréquentation</title>
+  <style>
+    :root{
+      --rouge:#c3002f;--rouge-10:#ffe6ec;--rouge-20:#ffd6df;--noir:#161616;--gris-50:#fafafa;--gris-100:#f5f5f7;--gris-200:#ececf1;--gris-300:#dedee6;--gris-600:#6a6a6a;--radius:14px
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--noir);background:white}
+    header{border-bottom:1px solid var(--gris-200);background:white;position:sticky;top:0;z-index:10}
+    .container{max-width:1100px;margin:0 auto;padding:18px 16px}
+    .brand{display:flex;align-items:baseline;gap:8px;font-weight:700}
+    .brand .badge{background:var(--rouge);color:#fff;padding:2px 10px;border-radius:999px;font-size:12px}
+    h1{font-size:clamp(22px,3vw,32px);margin:26px 0 8px}
+    h2{font-size:16px;color:var(--gris-600);margin:0 0 18px}
+
+    .wrap{background:var(--rouge-10);border:1px solid var(--rouge-20);border-radius:var(--radius);padding:18px}
+    .card{background:white;border:1px solid var(--gris-200);border-radius:var(--radius);box-shadow:0 1px 0 rgba(0,0,0,.03);}
+
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    thead th{background:#8f0024;color:#fff;padding:14px 12px;font-size:15px;text-align:left;position:sticky;top:70px;z-index:2}
+    thead th:first-child{border-top-left-radius:10px}
+    thead th:last-child{border-top-right-radius:10px}
+    tbody td{padding:16px 14px;border-left:1px solid var(--rouge-20);border-right:1px solid var(--rouge-20);}
+    tbody tr{background:#fff}
+    tbody tr:nth-child(odd){background:#fff7f9}
+    tbody tr:last-child td{border-bottom:1px solid var(--rouge-20)}
+    tbody td:first-child{font-weight:600;width:220px}
+
+    input[type="number"]{width:100%;padding:10px 12px;border:1px solid var(--gris-300);border-radius:10px;background:var(--gris-100);font-size:15px}
+    input[type="number"]:focus{outline:none;border-color:#8f0024;background:#fff;box-shadow:0 0 0 3px rgba(195,0,47,.15)}
+
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .btn{appearance:none;border:1px solid var(--gris-300);background:#fff;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .btn-primary{background:var(--rouge);border-color:var(--rouge);color:#fff}
+    .muted{color:var(--gris-600);font-size:13px}
+
+    .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+    .kpi{background:#fff;border:1px solid var(--gris-200);border-radius:12px;padding:12px 14px}
+    .kpi b{display:block;font-size:26px;margin-top:6px}
+
+    @media(max-width:720px){.kpis{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div class="brand"><span class="badge">OUVERT AUJOURD'HUI</span><span>Resto U’ Bartholdi</span></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Menu du Restaurant Universitaire – Estimation de la fréquentation</h1>
+
+    <section class="wrap card">
+      <table id="freq-table" aria-describedby="legend">
+        <thead>
+          <tr>
+            <th>Jour</th>
+            <th>Nombre d’étudiants</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+
+      <div class="kpis" aria-live="polite">
+        <div class="kpi"><span class="muted">Total semaine</span><b id="kpi-total">0</b></div>
+        <div class="kpi"><span class="muted">Moyenne / jour</span><b id="kpi-avg">0</b></div>
+        <div class="kpi"><span class="muted">Jour le plus chargé</span><b id="kpi-max">—</b></div>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-primary" id="save">Enregistrer</button>
+        <button class="btn" id="export">Exporter (.json)</button>
+        <button class="btn" id="import">Importer…</button>
+        <button class="btn" id="reset">Réinitialiser</button>
+        <input id="file" type="file" hidden accept="application/json" />
+        <span class="muted" id="legend">Données stockées dans votre navigateur (localStorage).</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi"]; // ajoutez samedi/dimanche si besoin
+    const STORAGE_KEY='restoU.freq.semaine';
+
+    const tbody=document.getElementById('tbody');
+    const totalEl=document.getElementById('kpi-total');
+    const avgEl=document.getElementById('kpi-avg');
+    const maxEl=document.getElementById('kpi-max');
+
+    const saveBtn=document.getElementById('save');
+    const exportBtn=document.getElementById('export');
+    const importBtn=document.getElementById('import');
+    const resetBtn=document.getElementById('reset');
+    const file=document.getElementById('file');
+
+    // Build rows
+    tbody.innerHTML=DAYS.map(d=>`<tr><td>${d}</td><td><input type="number" min="0" step="1" name="${d}" placeholder="0" aria-label="${d} – nombre d'étudiants"></td></tr>`).join('');
+
+    // hydrate
+    const saved=load();
+    if(saved){
+      for(const [day,val] of Object.entries(saved)){
+        const el=document.querySelector(`input[name="${day}"]`);
+        if(el) el.value=val;
+      }
+    } else {
+      // valeurs d'exemple de la maquette
+      const defaults={Lundi:300,Mardi:200,Mercredi:250,Jeudi:180,Vendredi:230};
+      for(const [day,val] of Object.entries(defaults)){
+        const el=document.querySelector(`input[name="${day}"]`); if(el) el.value=val;
+      }
+    }
+
+    recalc();
+
+    tbody.addEventListener('input',recalc);
+    saveBtn.addEventListener('click',()=>{ localStorage.setItem(STORAGE_KEY, JSON.stringify(readValues())); toast('Enregistré ✅'); });
+
+    exportBtn.addEventListener('click',()=>{
+      const payload=JSON.stringify(readValues(),null,2);
+      const blob=new Blob([payload],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download='frequentation_restoU.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    importBtn.addEventListener('click',()=>file.click());
+    file.addEventListener('change',async(e)=>{
+      const f=e.target.files?.[0]; if(!f) return;
+      try{
+        const text=await f.text();
+        const obj=JSON.parse(text);
+        for(const day of DAYS){
+          const el=document.querySelector(`input[name="${day}"]`);
+          if(el) el.value = Number(obj[day]||0);
+        }
+        recalc();
+        toast('Importé 📥');
+      }catch{ alert('Fichier invalide'); }
+      file.value='';
+    });
+
+    resetBtn.addEventListener('click',()=>{
+      if(!confirm('Réinitialiser les valeurs ?')) return;
+      for(const day of DAYS){ const el=document.querySelector(`input[name="${day}"]`); if(el) el.value=''; }
+      localStorage.removeItem(STORAGE_KEY); recalc();
+    });
+
+    function readValues(){
+      const out={};
+      for(const day of DAYS){ const el=document.querySelector(`input[name="${day}"]`); out[day]=Number(el?.value||0); }
+      return out;
+    }
+
+    function load(){ try{ const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):null; }catch{return null} }
+
+    function recalc(){
+      const vals=readValues();
+      const arr=Object.values(vals);
+      const total=arr.reduce((a,b)=>a+(Number.isFinite(b)?b:0),0);
+      const avg=Math.round(total/Math.max(1,DAYS.length));
+      totalEl.textContent=total.toLocaleString('fr-FR');
+      avgEl.textContent=avg.toLocaleString('fr-FR');
+      // max day
+      let maxDay='—', maxVal=-1; for(const [d,v] of Object.entries(vals)){ if(v>maxVal){ maxVal=v; maxDay=d+" ("+v.toLocaleString('fr-FR')+")"; } }
+      maxEl.textContent=maxVal>=0?maxDay:'—';
+    }
+
+    function toast(msg){
+      const t=document.createElement('div');
+      t.textContent=msg; t.style.position='fixed'; t.style.left='50%'; t.style.bottom='24px'; t.style.transform='translateX(-50%)'; t.style.background='#111'; t.style.color='#fff'; t.style.padding='10px 14px'; t.style.borderRadius='999px'; t.style.boxShadow='0 10px 30px rgba(0,0,0,.15)'; t.style.zIndex='9999';
+      document.body.appendChild(t); setTimeout(()=>t.remove(),1800);
+    }
+  </script>
+</body>
+</html>

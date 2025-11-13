@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resto U' Bartholdi – Saisie des menus</title>
+  <style>
+    :root {
+      --rouge: #c3002f;
+      --noir: #1a1a1a;
+      --gris-100: #f6f6f8;
+      --gris-200: #ececf1;
+      --gris-300: #d9d9e3;
+      --gris-600: #636366;
+      --bleu: #2a74ff;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--noir);
+      background: white;
+    }
+    header {
+      border-bottom: 1px solid var(--gris-200);
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 18px 16px; }
+    .brand {
+      display: flex; align-items: baseline; gap: 8px; font-weight: 700; letter-spacing: 0.2px;
+    }
+    .brand .badge { background: var(--rouge); color: #fff; font-size: 12px; border-radius: 999px; padding: 2px 8px; }
+    h1 { font-size: clamp(22px, 3vw, 32px); margin: 24px 0 8px; }
+    h2 { font-size: 16px; font-weight: 600; color: var(--gris-600); margin: 0 0 18px; }
+
+    /* Table */
+    .card { background: #fff; border: 1px solid var(--gris-200); border-radius: var(--radius); box-shadow: 0 1px 0 rgba(0,0,0,.03); padding: 16px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    thead th {
+      position: sticky; top: 0; background: #fff; z-index: 1;
+      font-size: 14px; text-align: left; color: #333; border-bottom: 1px solid var(--gris-300);
+      padding: 12px 10px;
+    }
+    tbody td { padding: 10px; border-bottom: 1px solid var(--gris-200); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td:first-child, thead th:first-child { font-weight: 600; width: 120px; }
+
+    input[type="text"], input[type="number"], input[type="search"] {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--gris-300); border-radius: 10px; font-size: 14px; outline: none; background: var(--gris-100);
+    }
+    input:focus { border-color: var(--bleu); background: #fff; box-shadow: 0 0 0 3px rgba(42,116,255,.12); }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }
+    .btn {
+      appearance: none; border: 1px solid var(--gris-300); background: #fff; padding: 10px 14px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: .15s ease; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    .btn:active { transform: translateY(0); box-shadow: none; }
+    .btn-primary { background: var(--bleu); color: #fff; border-color: var(--bleu); }
+    .btn-danger { background: #fff0f2; color: var(--rouge); border-color: #ffd5df; }
+
+    .chips { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--gris-100); border: 1px solid var(--gris-200); border-radius: 999px; font-size: 13px; }
+
+    .footer-cta { display: grid; place-items: center; padding: 40px 0 70px; }
+    .muted { color: var(--gris-600); font-size: 13px; }
+
+    @media (max-width: 860px){
+      tbody td:first-child, thead th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
+      table { overflow: auto; display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <div class="brand">
+        <span class="badge">OUVERT AUJOURD'HUI</span>
+        <span>Resto U’ Bartholdi</span>
+      </div>
+      <div class="chips" id="chips-etudiants" title="Nombre d'étudiants attendu pour la semaine">
+        👥 <strong id="etudiants-count">0</strong> étudiants attendus
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Menu du Restaurant Universitaire – Saisie des plats de la semaine</h1>
+    <h2>Des plats de la semaine</h2>
+
+    <section class="card">
+      <div style="overflow:auto">
+        <table id="menu-table" aria-describedby="notice">
+          <thead id="thead">
+            <tr>
+              <th>Jour</th>
+              <th>Plat 1</th>
+              <th>Quantité 1</th>
+              <th>Plat 2</th>
+              <th>Quantité 2</th>
+              <th>Plat 3</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- Lignes insérées par JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn" id="add-plat">＋ Ajouter un plat</button>
+        <button class="btn btn-danger" id="remove-plat" title="Supprimer la dernière paire Plat/Quantité">— Retirer un plat</button>
+        <span class="muted" id="notice">Les données sont enregistrées dans votre navigateur (localStorage). Vous pouvez aussi exporter un fichier JSON.</span>
+      </div>
+
+      <div class="toolbar" style="margin-top:12px">
+        <button class="btn btn-primary" id="save">Enregistrer les menus</button>
+        <button class="btn" id="export">Exporter (.json)</button>
+        <button class="btn" id="import">Importer…</button>
+        <input type="file" id="file-input" accept="application/json" hidden />
+        <button class="btn" id="set-students">Nombre d'étudiant attendu</button>
+      </div>
+    </section>
+
+    <div class="footer-cta">
+      <p class="muted">Prototype front‑end accessible et responsive – aucun serveur requis.</p>
+    </div>
+  </main>
+
+  <script>
+    const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]; // ajustez si besoin
+    const STORAGE_KEY = "restoU.menu.week";
+    const STORAGE_N_STUDENTS = "restoU.menu.students";
+
+    const thead = document.getElementById('thead');
+    const tbody = document.getElementById('tbody');
+    const addBtn = document.getElementById('add-plat');
+    const removeBtn = document.getElementById('remove-plat');
+    const saveBtn = document.getElementById('save');
+    const exportBtn = document.getElementById('export');
+    const importBtn = document.getElementById('import');
+    const fileInput = document.getElementById('file-input');
+    const setStudentsBtn = document.getElementById('set-students');
+    const studentsCount = document.getElementById('etudiants-count');
+
+    // ----- construction du tableau -----
+    let platPairs = 3; // nombre de colonnes "Plat" visibles (1 paire = Plat + Quantité, sauf la 1ère qui a déjà sa Quantité 1)
+    buildTable();
+
+    function buildTable(){
+      // En-têtes
+      const headerRow = ["Jour"]; // on repart de zéro
+      for(let i=1;i<=platPairs;i++){
+        headerRow.push(`Plat ${i}`);
+        if(i !== platPairs || i === 1) { // afficher Quantité pour tous sauf la dernière si on veut se caler sur maquette
+          headerRow.push(`Quantité ${i}`);
+        }
+      }
+      thead.innerHTML = `<tr>${headerRow.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+
+      // Corps
+      tbody.innerHTML = DAYS.map(day => {
+        let cells = [`<td><label${day}</td>`];
+        for(let i=1;i<=platPairs;i++){
+          cells.push(`<td><input type="text" inputmode="text" name="${day}-plat-${i}" placeholder="Nom du plat" aria-label="${day} plat ${i}"></td>`);
+          if(i !== platPairs || i === 1){
+            cells.push(`<td><input type="number" min="0" step="1" name="${day}-qte-${i}" placeholder="0" aria-label="${day} quantité ${i}"></td>`);
+          }
+        }
+        return `<tr data-day="${day}">${cells.join('')}</tr>`;
+      }).join('');
+
+      // recharger données si existantes
+      const saved = load();
+      if(saved){
+        for(const day of DAYS){
+          const row = saved[day] || {};
+          for(let i=1;i<=platPairs;i++){
+            const platInput = document.querySelector(`input[name="${day}-plat-${i}"]`);
+            if(platInput && row[`plat${i}`] !== undefined) platInput.value = row[`plat${i}`] ?? '';
+            const qteInput = document.querySelector(`input[name="${day}-qte-${i}"]`);
+            if(qteInput && row[`qte${i}`] !== undefined) qteInput.value = row[`qte${i}`] ?? '';
+          }
+        }
+      }
+    }
+
+    // ----- actions -----
+    addBtn.addEventListener('click', () => {
+      platPairs = Math.min(6, platPairs + 1); // limite raisonnable
+      buildTable();
+    });
+
+    removeBtn.addEventListener('click', () => {
+      platPairs = Math.max(1, platPairs - 1);
+      buildTable();
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const data = {};
+      for(const day of DAYS){
+        data[day] = {};
+        for(let i=1;i<=platPairs;i++){
+          const plat = document.querySelector(`input[name="${day}-plat-${i}"]`)?.value?.trim() || '';
+          const qteEl = document.querySelector(`input[name="${day}-qte-${i}"]`);
+          const qte = qteEl ? Number(qteEl.value || 0) : undefined;
+          data[day][`plat${i}`] = plat;
+          if(qteEl) data[day][`qte${i}`] = isFinite(qte) && qte >= 0 ? qte : 0;
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ platPairs, data }));
+      toast("Menus enregistrés ✅");
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const payload = localStorage.getItem(STORAGE_KEY) || JSON.stringify({ platPairs, data: {} });
+      const blob = new Blob([payload], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'menus_restoU.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    importBtn.addEventListener('click', ()=> fileInput.click());
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if(!file) return;
+      const text = await file.text();
+      try {
+        const parsed = JSON.parse(text);
+        if(parsed.platPairs) platPairs = Math.max(1, Math.min(6, Number(parsed.platPairs)));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        buildTable();
+        toast('Menus importés 📥');
+      } catch(err){
+        alert("Fichier invalide");
+      } finally {
+        fileInput.value = '';
+      }
+    });
+
+    setStudentsBtn.addEventListener('click', () => {
+      const current = Number(localStorage.getItem(STORAGE_N_STUDENTS) || 0);
+      const val = prompt("Nombre d'étudiants attendu (total semaine)", current || 0);
+      if(val === null) return;
+      const n = Math.max(0, Math.floor(Number(val)) || 0);
+      localStorage.setItem(STORAGE_N_STUDENTS, String(n));
+      updateStudentsChip();
+    });
+
+    function updateStudentsChip(){
+      const n = Number(localStorage.getItem(STORAGE_N_STUDENTS) || 0);
+      studentsCount.textContent = n;
+    }
+
+    function load(){
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return null;
+        const parsed = JSON.parse(raw);
+        if(typeof parsed.platPairs === 'number') platPairs = Math.max(1, Math.min(6, parsed.platPairs));
+        return parsed.data || null;
+      } catch { return null; }
+    }
+
+    // mini-toast
+    function toast(msg){
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.position = 'fixed';
+      t.style.left = '50%';
+      t.style.bottom = '24px';
+      t.style.transform = 'translateX(-50%)';
+      t.style.background = '#111';
+      t.style.color = '#fff';
+      t.style.padding = '10px 14px';
+      t.style.borderRadius = '999px';
+      t.style.boxShadow = '0 10px 30px rgba(0,0,0,.15)';
+      t.style.zIndex = '9999';
+      document.body.appendChild(t);
+      setTimeout(()=> t.remove(), 1800);
+    }
+
+    // init
+    updateStudentsChip();
+  </script>
+</body>
+</html>
