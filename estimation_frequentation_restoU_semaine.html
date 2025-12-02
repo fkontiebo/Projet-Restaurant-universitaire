@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resto U' Bartholdi – Estimation de la fréquentation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="container flex-between">
+      <div class="brand"><span class="badge">OUVERT AUJOURD'HUI</span><span>Resto U’ Bartholdi</span></div>
+      <a href="index.html" style="font-size:13px;color:#000;text-decoration:none;">← Retour à l’accueil</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Menu du Restaurant Universitaire – Estimation de la fréquentation</h1>
+
+    <section class="wrap card freq-card">
+      <table id="freq-table" class="freq-table" aria-describedby="legend">
+        <thead>
+          <tr>
+            <th>Jour</th>
+            <th>Nombre d’étudiants</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+
+      <div class="kpis" aria-live="polite">
+        <div class="kpi"><span class="muted">Total semaine</span><b id="kpi-total">0</b></div>
+        <div class="kpi"><span class="muted">Moyenne / jour</span><b id="kpi-avg">0</b></div>
+        <div class="kpi"><span class="muted">Jour le plus chargé</span><b id="kpi-max">—</b></div>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-primary btn-small" id="save">Enregistrer</button>
+        <button class="btn btn-secondary btn-small" id="export">Exporter (.json)</button>
+        <button class="btn btn-secondary btn-small" id="import">Importer…</button>
+        <button class="btn btn-secondary btn-small" id="reset">Réinitialiser</button>
+        <input id="file" type="file" hidden accept="application/json" />
+        <span class="muted" id="legend">Données stockées dans votre navigateur (localStorage).</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="frequentation.js"></script>
+</body>
+</html>

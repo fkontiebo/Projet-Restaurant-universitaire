@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr" class="page-personnel">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resto U' Bartholdi – Saisie des menus</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+  <div class="container flex-between">
+    <div class="brand">
+      <span class="badge">OUVERT AUJOURD'HUI</span>
+      <span>Resto U’ Bartholdi</span>
+    </div>
+
+    <a href="index.html"
+       style="font-size:13px;color:#000;text-decoration:none;">
+      ← Retour à l’accueil
+    </a>
+  </div>
+</header>
+
+  <main class="container">
+    <h1>Menu du Restaurant Universitaire – Saisie des plats de la semaine</h1>
+    <h2>Des plats de la semaine</h2>
+    <div class="chips" id="chips-etudiants" title="Nombre d'étudiants attendu pour la semaine">
+        👥 <strong id="etudiants-count">0</strong> étudiants attendus
+      </div>
+    <section class="card">
+      <div class="table-wrapper">
+        <table id="menu-table" aria-describedby="notice">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="toolbar">
+
+        <span class="muted" id="notice">
+          Les données sont enregistrées dans votre navigateur (localStorage). Vous pouvez aussi exporter un fichier JSON.
+        </span>
+      </div>
+
+      <div class="toolbar" style="margin-top:12px">
+        <button class="btn btn-primary btn-small" id="save">Enregistrer les menus</button>
+        <button class="btn btn-secondary btn-small" id="export">Exporter (.json)</button>
+        <button class="btn btn-secondary btn-small" id="import">Importer…</button>
+        <input type="file" id="file-input" accept="application/json" hidden />
+        <button class="btn btn-secondary btn-small" onclick="location.href='estimation_frequentation_restoU_semaine.html'">
+          Nombre d'étudiants attendus
+        </button>
+      </div>
+    </section>
+
+    <div class="footer-cta">
+      <p class="muted">Prototype front-end accessible et responsive – aucun serveur requis.</p>
+    </div>
+  </main>
+
+  <script src="personnel.js"></script>
+</body>
+</html>

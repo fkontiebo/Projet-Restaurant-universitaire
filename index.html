@@ -1,72 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resto U' Bartholdi</title>
-    <link rel="stylesheet" href="PageAccueil.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resto U’ Bartholdi – Accueil</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<header class="topbar">
-    <div class="logo-zone">
-        <div class="gov-logo">LOGO République Française</div>
-        <div class="crous-logo">LOGO CROUS 70 ans</div>
+  <header>
+    <div class="container flex-between">
+      <div class="brand">
+        <span class="badge">OUVERT AUJOURD'HUI</span>
+        <span>Resto U’ Bartholdi</span>
+      </div>
     </div>
-    <nav>
-        <a href="#">Le Crous</a>
-        <a href="#">Se restaurer</a>
-        <a href="#">Se loger</a>
-        <a href="#">Bourses</a>
-    </nav>
-    <button class="contact-btn">Contacts</button>
-</header>
+  </header>
 
-<main>
+  <main class="container">
+    <h1>Resto U’ Bartholdi</h1>
+    <p style="text-align:center;max-width:650px;margin:auto;color:var(--gris-600)">
+      Bienvenue au restaurant universitaire Bartholdi du Crous Nantes – Pays de la Loire.
+      Choisissez votre profil pour accéder à l’espace correspondant.
+    </p>
 
-    <section class="hero">
-        <span class="status">OUVERT AUJOURD'HUI</span>
-        <h1>Resto U’ Bartholdi</h1>
+    <div class="btns">
+      <a href="formulaire_menu_restoU.html" class="btn">Personnel</a>
+      <a href="etudiant_menu_reservation.html" class="btn">Étudiant</a>
+    </div>
 
-        <div class="role-buttons">
-            <a href="#" class="btn">Personnel</a>
-            <a href="#" class="btn">Étudiant</a>
+    <section>
+      <h2>Infos pratiques</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Horaires</h3>
+          <p>Du lundi au vendredi de 11h00 à 13h45</p>
         </div>
+        <div class="info-card">
+          <h3>Adresse</h3>
+          <p>1 rue Démocratie – 72000 Le Mans</p>
+        </div>
+        <div class="info-card">
+          <h3>Paiement possible</h3>
+          <p>IZLY</p>
+        </div>
+        <div class="info-card">
+          <h3>Pratique</h3>
+          <p>Accès handicapé</p>
+        </div>
+      </div>
     </section>
 
-    <section class="infos">
-        <h2>Infos pratiques</h2>
-
-        <div class="cards">
-
-            <div class="card">
-                <!-- IMAGE ICI -->
-                <h3>Horaires</h3>
-                <p>Du lundi au vendredi de 11h00 à 13h45</p>
-            </div>
-
-            <div class="card">
-                <!-- IMAGE ICI -->
-                <h3>Adresse</h3>
-                <p>1 rue Démocrite - 72000 Le Mans</p>
-            </div>
-
-            <div class="card">
-                <!-- IMAGE ICI -->
-                <h3>Paiement</h3>
-                <p>IZLY</p>
-            </div>
-
-            <div class="card">
-                <!-- IMAGE ICI -->
-                <h3>Pratique</h3>
-                <p>Accès handicapé</p>
-            </div>
-
-        </div>
+    <section class="map">
+      <h2>Localisation</h2>
+      
+      <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=0.1493990421295166%2C48.01624904722113%2C0.1581162214279175%2C48.01936365445303&amp;layer=mapnik&amp;marker=48.01780637435657%2C0.15375763177871704" style="border: 1px solid black"></iframe>
+<br/><a href="https://www.openstreetmap.org/?mlat=48.017806&amp;mlon=0.153758#map=18/48.017806/0.153758" target="_blank" rel="noopener" style="color:var(--rouge);text-decoration:none;font-weight:600">Ouvrir dans OpenStreetMap ↗</a>
     </section>
+  </main>
 
-</main>
-
+  <footer>
+    © Crous Nantes – Pays de la Loire · Resto U’ Bartholdi · Tous droits réservés
+  </footer>
 </body>
 </html>
+
